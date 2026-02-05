@@ -11,7 +11,7 @@
         // Количество физических ядер
         public int CoreCount { get; set; }
 
-        // Количество логических потоков (с учетом Hyper-Threading)
+        // Количество логических потоков
         public int ThreadCount { get; set; }
 
         // Базовая частота процессора в МГц
