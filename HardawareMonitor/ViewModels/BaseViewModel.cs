@@ -7,7 +7,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 
-namespace HardаwareMonitor.ViewModels
+namespace HardawareMonitor.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
@@ -25,7 +25,9 @@ namespace HardаwareMonitor.ViewModels
         {
             // Если значение не изменилось, не вызываем событие
             if (Equals(storage, value))
+            {
                 return false;
+            }
 
             storage = value;
             OnPropertyChanged(propertyName);

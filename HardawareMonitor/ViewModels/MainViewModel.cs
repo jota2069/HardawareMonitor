@@ -1,7 +1,6 @@
 ﻿using HardawareMonitor.Models;
 using HardawareMonitor.Services;
-using HardwareMonitor.ViewModels;
-using HardаwareMonitor.ViewModels;
+using HardawareMonitor.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +13,9 @@ namespace HardawareMonitor.ViewModels
     public class MainViewModel : BaseViewModel
     {
         // Поля сервисовв
-        private CpuMonitor _cpuMonitor;
-        private MemoryMonitor _memoryMonitor;
-        private DiskMonitor _diskMonitor;
+        private readonly CpuMonitor _cpuMonitor;
+        private readonly MemoryMonitor _memoryMonitor;
+        private readonly DiskMonitor _diskMonitor;
 
 
         // Свойства для хранения данных
@@ -51,8 +50,8 @@ namespace HardawareMonitor.ViewModels
             _memoryMonitor = new MemoryMonitor();
             _diskMonitor = new DiskMonitor();
 
-
             RefreshCommand = new RelayCommand(async () => await RefreshDataAsync());
+            RefreshData();
         }
 
         private async Task RefreshDataAsync()
