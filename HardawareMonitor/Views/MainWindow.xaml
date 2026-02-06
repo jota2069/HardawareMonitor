@@ -1,0 +1,104 @@
+﻿<Window x:Class="HardawareMonitor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HardawareMonitor"
+        mc:Ignorable="d"
+        Title="Hardware Monitor" Height="600" Width="800" Background="#F5F5F5">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Мониторинг Системы" FontSize="24" FontWeight="Bold" Foreground="#333"/>
+            <Button Command="{Binding RefreshCommand}" Content="Обновить" Margin="20,0,0,0" Padding="15,5" 
+                    Background="#2196F3" Foreground="White" BorderThickness="0">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="3"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+
+                <GroupBox Header="Процессор (CPU)" Margin="0,0,0,15" Padding="10">
+                    <StackPanel>
+                        <TextBlock Text="{Binding CpuInfo.Name}" FontSize="16" FontWeight="SemiBold"/>
+                        <TextBlock Text="{Binding CpuInfo.Manufacturer, StringFormat='Производитель: {0}'}"/>
+                        <Grid Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Загрузка: " VerticalAlignment="Center"/>
+                            <ProgressBar Grid.Column="1" Value="{Binding CpuInfo.LoadPercentage}" Height="15" Margin="10,0" Maximum="100"/>
+                            <TextBlock Grid.Column="2" Text="{Binding CpuInfo.LoadPercentage, StringFormat='{}{0:F1}%'}" VerticalAlignment="Center"/>
+                        </Grid>
+                        <TextBlock Text="{Binding CpuInfo.CoreCount, StringFormat='Ядер: {0}'}" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="Оперативная память (RAM)" Margin="0,0,0,15" Padding="10">
+                    <StackPanel>
+                        <Grid Margin="0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Использование: " VerticalAlignment="Center"/>
+                            <ProgressBar Grid.Column="1" Value="{Binding MemoryInfo.UsagePercentage}" Height="15" Margin="10,0" Maximum="100" Foreground="#4CAF50"/>
+                            <TextBlock Grid.Column="2" Text="{Binding MemoryInfo.UsagePercentage, StringFormat='{}{0:F1}%'}" VerticalAlignment="Center"/>
+                        </Grid>
+                        <ItemsControl ItemsSource="{Binding MemoryInfo.Modules}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Manufacturer, StringFormat='Модуль: {0}'}" Foreground="#666" FontSize="11"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="Логические диски" Padding="10">
+                    <ItemsControl ItemsSource="{Binding DiskInfo.LogicalDisks}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="#DDD" BorderThickness="0,0,0,1" Padding="5" Margin="0,5">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="50"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="100"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding DriveLetter}" FontWeight="Bold" VerticalAlignment="Center"/>
+                                        <StackPanel Grid.Column="1" Margin="10,0">
+                                            <ProgressBar Value="{Binding UsagePercent}" Height="10" Maximum="100"/>
+                                            <TextBlock Text="{Binding FileSystem, StringFormat='ФС: {0}'}" FontSize="10"/>
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="2" Text="{Binding UsagePercent, StringFormat='{}{0:F1}% занято'}" 
+                                                   HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </GroupBox>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <StatusBar Grid.Row="2" Background="Transparent" Margin="0,10,0,0">
+            <TextBlock Text="Статус: Готов" Foreground="#888"/>
+        </StatusBar>
+    </Grid>
+</Window>
