@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:HardawareMonitor"
              StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
-         
+        <local:BytesToMBConverter x:Key="BytesToMBConverter"/>
+        <local:BytesToGBConverter x:Key="BytesToGBConverter"/>
     </Application.Resources>
 </Application>

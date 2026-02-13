@@ -13,11 +13,13 @@ namespace HardawareMonitor.ViewModels
         private readonly Action<object> _execute;
         private readonly Func<object, bool> _canExecute;
 
+
+
         // Конструктор для команды БЕЗ параметра
         public RelayCommand(Action execute, Func<bool> canExecute = null)
             : this(
-                execute != null ? new Action<object>(p => execute()) : null,
-                canExecute != null ? new Func<object, bool>(p => canExecute()) : null)
+        execute != null ? new Action<object>(p => execute()) : null,
+        canExecute != null ? new Func<object, bool>(p => canExecute()) : null)
         {
         }
 

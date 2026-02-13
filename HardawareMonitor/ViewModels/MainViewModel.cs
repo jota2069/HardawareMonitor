@@ -8,17 +8,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
+
 namespace HardawareMonitor.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
-        // Поля сервисовв
         private readonly CpuMonitor _cpuMonitor;
         private readonly MemoryMonitor _memoryMonitor;
         private readonly DiskMonitor _diskMonitor;
 
-
-        // Свойства для хранения данных
         private CpuInfo _cpuInfo;
         public CpuInfo CpuInfo
         {
@@ -40,10 +38,8 @@ namespace HardawareMonitor.ViewModels
             set => SetProperty(ref _diskInfo, value);
         }
 
-        // Командда (нужно для MVVM)
         public ICommand RefreshCommand { get; }
 
-        // конструктор класса
         public MainViewModel()
         {
             _cpuMonitor = new CpuMonitor();
@@ -51,23 +47,16 @@ namespace HardawareMonitor.ViewModels
             _diskMonitor = new DiskMonitor();
 
             RefreshCommand = new RelayCommand(async () => await RefreshDataAsync());
-            RefreshData();
+
+            // Используем асинхронное обновление при старте
+            _ = RefreshDataAsync();
         }
 
-        private async Task RefreshDataAsync()
+        public async Task RefreshDataAsync()
         {
             CpuInfo = await Task.Run(() => _cpuMonitor.GetCpuInfo());
             MemoryInfo = await Task.Run(() => _memoryMonitor.GetMemoryInfo());
             DiskInfo = await Task.Run(() => _diskMonitor.GetDiskInfo());
-        }
-
-
-        //Метод обновления данных
-        public void RefreshData()
-        {
-            CpuInfo = _cpuMonitor.GetCpuInfo();
-            MemoryInfo = _memoryMonitor.GetMemoryInfo();
-            DiskInfo = _diskMonitor.GetDiskInfo();
         }
     }
 }

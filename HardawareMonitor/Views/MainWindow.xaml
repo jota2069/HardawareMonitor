@@ -3,102 +3,114 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:HardawareMonitor"
+        xmlns:vm="clr-namespace:HardawareMonitor.ViewModels"
         mc:Ignorable="d"
-        Title="Hardware Monitor" Height="600" Width="800" Background="#F5F5F5">
+        Title="Hardware Monitor" Height="600" Width="800">
 
-    <Grid Margin="20">
+    <Window.DataContext>
+        <vm:MainViewModel />
+    </Window.DataContext>
+
+    <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,20">
-            <TextBlock Text="Мониторинг Системы" FontSize="24" FontWeight="Bold" Foreground="#333"/>
-            <Button Command="{Binding RefreshCommand}" Content="Обновить" Margin="20,0,0,0" Padding="15,5" 
-                    Background="#2196F3" Foreground="White" BorderThickness="0">
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="3"/>
-                    </Style>
-                </Button.Resources>
-            </Button>
-        </StackPanel>
+        <!-- Кнопка обновления -->
+        <Button Content="Обновить" Width="100" Height="30" 
+                HorizontalAlignment="Left" 
+                Command="{Binding RefreshCommand}" />
 
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <StackPanel>
+        <!-- Основной контент -->
+        <TabControl Grid.Row="1" Margin="0,10,0,0">
+            <!-- CPU -->
+            <TabItem Header="Процессор">
+                <StackPanel Margin="10">
+                    <TextBlock Text="Название:" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding CpuInfo.Name}" Margin="0,0,0,10"/>
 
-                <GroupBox Header="Процессор (CPU)" Margin="0,0,0,15" Padding="10">
-                    <StackPanel>
-                        <TextBlock Text="{Binding CpuInfo.Name}" FontSize="16" FontWeight="SemiBold"/>
-                        <TextBlock Text="{Binding CpuInfo.Manufacturer, StringFormat='Производитель: {0}'}"/>
-                        <Grid Margin="0,10,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="Загрузка: " VerticalAlignment="Center"/>
-                            <ProgressBar Grid.Column="1" Value="{Binding CpuInfo.LoadPercentage}" Height="15" Margin="10,0" Maximum="100"/>
-                            <TextBlock Grid.Column="2" Text="{Binding CpuInfo.LoadPercentage, StringFormat='{}{0:F1}%'}" VerticalAlignment="Center"/>
-                        </Grid>
-                        <TextBlock Text="{Binding CpuInfo.CoreCount, StringFormat='Ядер: {0}'}" Margin="0,5,0,0"/>
-                    </StackPanel>
-                </GroupBox>
+                    <TextBlock Text="Производитель:" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding CpuInfo.Manufacturer}" Margin="0,0,0,10"/>
 
-                <GroupBox Header="Оперативная память (RAM)" Margin="0,0,0,15" Padding="10">
-                    <StackPanel>
-                        <Grid Margin="0,5">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="Использование: " VerticalAlignment="Center"/>
-                            <ProgressBar Grid.Column="1" Value="{Binding MemoryInfo.UsagePercentage}" Height="15" Margin="10,0" Maximum="100" Foreground="#4CAF50"/>
-                            <TextBlock Grid.Column="2" Text="{Binding MemoryInfo.UsagePercentage, StringFormat='{}{0:F1}%'}" VerticalAlignment="Center"/>
-                        </Grid>
-                        <ItemsControl ItemsSource="{Binding MemoryInfo.Modules}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Manufacturer, StringFormat='Модуль: {0}'}" Foreground="#666" FontSize="11"/>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-                </GroupBox>
+                    <TextBlock Text="Архитектура:" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding CpuInfo.Architecture}" Margin="0,0,0,10"/>
 
-                <GroupBox Header="Логические диски" Padding="10">
-                    <ItemsControl ItemsSource="{Binding DiskInfo.LogicalDisks}">
+                    <TextBlock Text="Ядер:" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding CpuInfo.CoreCount}" Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Потоков:" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding CpuInfo.ThreadCount}" Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Базовая частота (МГц):" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding CpuInfo.BaseFrequency}" Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Загрузка CPU (%):" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding CpuInfo.LoadPercentage}" Margin="0,0,0,10"/>
+                </StackPanel>
+            </TabItem>
+
+            <!-- Память -->
+            <TabItem Header="Память">
+                <StackPanel Margin="10">
+                    <TextBlock Text="Общий объём памяти (МБ):" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding MemoryInfo.TotalMemoryBytes, Converter={StaticResource BytesToMBConverter}}" Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Доступная память (МБ):" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding MemoryInfo.AvailableMemoryBytes, Converter={StaticResource BytesToMBConverter}}" Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Использовано (%):" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding MemoryInfo.UsagePercentage}" Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Модули памяти:" FontWeight="Bold" Margin="0,10,0,5"/>
+                    <ItemsControl ItemsSource="{Binding MemoryInfo.Modules}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border BorderBrush="#DDD" BorderThickness="0,0,0,1" Padding="5" Margin="0,5">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="50"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="100"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{Binding DriveLetter}" FontWeight="Bold" VerticalAlignment="Center"/>
-                                        <StackPanel Grid.Column="1" Margin="10,0">
-                                            <ProgressBar Value="{Binding UsagePercent}" Height="10" Maximum="100"/>
-                                            <TextBlock Text="{Binding FileSystem, StringFormat='ФС: {0}'}" FontSize="10"/>
-                                        </StackPanel>
-                                        <TextBlock Grid.Column="2" Text="{Binding UsagePercent, StringFormat='{}{0:F1}% занято'}" 
-                                                   HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                                    </Grid>
-                                </Border>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                    <TextBlock Text="{Binding Manufacturer}" Width="150"/>
+                                    <TextBlock Text="{Binding CapacityBytes, Converter={StaticResource BytesToMBConverter}}" Width="100"/>
+                                    <TextBlock Text="{Binding SpeedMHz}" Width="80"/>
+                                    <TextBlock Text="МГц"/>
+                                </StackPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                </GroupBox>
+                </StackPanel>
+            </TabItem>
 
-            </StackPanel>
-        </ScrollViewer>
+            <!-- Диски -->
+            <TabItem Header="Диски">
+                <StackPanel Margin="10">
+                    <TextBlock Text="Физические диски:" FontWeight="Bold" Margin="0,0,0,5"/>
+                    <ItemsControl ItemsSource="{Binding DiskInfo.PhysicalDisks}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                    <TextBlock Text="{Binding Model}" Width="200"/>
+                                    <TextBlock Text="{Binding Size, Converter={StaticResource BytesToGBConverter}}" Width="100"/>
+                                    <TextBlock Text="{Binding MediaType}" Width="100"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
 
-        <StatusBar Grid.Row="2" Background="Transparent" Margin="0,10,0,0">
-            <TextBlock Text="Статус: Готов" Foreground="#888"/>
-        </StatusBar>
+                    <TextBlock Text="Логические диски:" FontWeight="Bold" Margin="0,10,0,5"/>
+                    <ItemsControl ItemsSource="{Binding DiskInfo.LogicalDisks}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                    <TextBlock Text="{Binding DriveLetter}" Width="50"/>
+                                    <TextBlock Text="{Binding TotalSizeBytes, Converter={StaticResource BytesToGBConverter}}" Width="100"/>
+                                    <TextBlock Text="{Binding FreeSizeBytes, Converter={StaticResource BytesToGBConverter}}" Width="100"/>
+                                    <TextBlock Text="{Binding UsagePercent}" Width="80"/>
+                                    <TextBlock Text="%" />
+                                    <TextBlock Text="{Binding FileSystem}" Width="80"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
