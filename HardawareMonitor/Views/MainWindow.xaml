@@ -111,6 +111,17 @@
                     </ItemsControl>
                 </StackPanel>
             </TabItem>
+            <TabItem Header="Процессы">
+                <DataGrid ItemsSource="{Binding Processes}" AutoGenerateColumns="False" Margin="10">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Имя" Binding="{Binding Name}" Width="200"/>
+                        <DataGridTextColumn Header="Состояние" Binding="{Binding Status}" Width="100"/>
+                        <DataGridTextColumn Header="CPU (%)" Binding="{Binding CpuUsage}" Width="80"/>
+                        <DataGridTextColumn Header="Память (МБ)" Binding="{Binding MemoryBytes, Converter={StaticResource BytesToMBConverter}}" Width="100"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
         </TabControl>
     </Grid>
 </Window>
